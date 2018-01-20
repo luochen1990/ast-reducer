@@ -14,7 +14,7 @@
   ],
   "main": "./lib/reducer.js",
   "scripts": {
-    "prepublish": "rm -r lib && coffee -o lib -c src && sleep 1"
+    "prepare": "rm -r lib && coffee -o lib -c src && sleep 1"
   },
   "dependencies": {
     "node-define-error": "^0.1.0"
