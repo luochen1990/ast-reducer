@@ -30,7 +30,7 @@ In CoffeeScript
 ```coffeescript
 ###------- Import Package -------###
 
-{defineReducer} = require('./reducer')
+{defineReducer} = require('ast-reducer')
 
 ###------- Simple Usage -------###
 
