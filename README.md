@@ -27,12 +27,10 @@ Usage
 
 In CoffeeScript
 
+#### Simple Usage
+
 ```coffeescript
-###------- Import Package -------###
-
 {defineReducer} = require('ast-reducer')
-
-###------- Simple Usage -------###
 
 evalExpr = defineReducer({name: 'ArithCalc'}) (def) ->
   def('+') ([a, b]) -> @(a) + @(b)
@@ -41,10 +39,13 @@ evalExpr = defineReducer({name: 'ArithCalc'}) (def) ->
 
 ast = ['+', ['-', ['const', 1], ['const', 2]], ['+', ['const', '4'], ['const', '8']]]
 console.log evalExpr.eval(ast)
+
 # output: 11
+```
 
-###------- Use State -------###
+#### Use State
 
+```coffeescript
 evalExpr = defineReducer({name: 'ArithCalc0'}) (def) ->
   def('+') ([a, b], {env, state}) -> state.cnt += 1; @(a) + @(b)
   def('-') ([a, b], {env, state}) -> state.cnt += 1; @(a) - @(b)
@@ -52,22 +53,29 @@ evalExpr = defineReducer({name: 'ArithCalc0'}) (def) ->
 
 context = {env: {}, initState: (-> {cnt: 0})}
 console.log evalExpr.runState(ast, context)
+
 # output: { result: 11, state: { cnt: 3 } }
+```
 
-###------- Derive Reducer -------###
+#### Derive Reducer
 
+```coffeescript
 evalExpr2 = evalExpr.derive({name: 'ArithCalc1'}) (def) ->
   def('*') ([a, b], {env, state}) -> state.cnt += 1; @(a) * @(b)
 
 ast2 = ['+', ['-', ['const', 1], ['const', 2]], ['*', ['const', '4'], ['const', '8']]]
 console.log evalExpr2.runState(ast2, context)
+
 # output: { result: 31, state: { cnt: 3 } }
+```
 
-###------- Error Report -------###
+#### Error Report
 
+```coffeescript
 console.log evalExpr.runState(ast2, context)
-# error message:
-###
+
+### error message:
+
 ReduceError:
   [reducer]: "ArithCalc0"
   [path]: ["+","*"]
