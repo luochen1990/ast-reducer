@@ -47,6 +47,7 @@ defineReducer = (opts) ->
 				runState: (t, context) -> reduce(t, context)
 				evalState: (t, context) -> reduce(t, context).result
 				execState: (t, context) -> reduce(t, context).state
+				eval: (t) -> reduce(t).result
 				derive: (opts2) -> defineReducer({
 					name: opts2.name
 					parseNode: opts2.parseNode ? parseNode
@@ -81,7 +82,7 @@ if module.parent is null
 
 	context = {env: {}, initState: (-> {cnt: 0})}
 
-	log -> evalExpr.runState(['+', ['-', ['const', 1], ['const', 2]], ['+', ['const', '4'], ['const', '8']]])
+	log -> evalExpr.eval(['+', ['-', ['const', 1], ['const', 2]], ['+', ['const', '4'], ['const', '8']]])
 	log -> evalExpr1.runState(['+', ['-', ['const', 1], ['const', 2]], ['+', ['const', '4'], ['const', '8']]], context)
 	log -> evalExpr1.runState(['+', ['-', ['const', 1], ['const', 2]], ['+', ['const', '4'], ['const', '8']]], context)
 	log -> evalExpr2.runState(['+', ['-', ['const', 1], ['const', 2]], ['*', ['const', '4'], ['const', '8']]], context)
