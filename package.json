@@ -1,0 +1,25 @@
+{
+  "name": "ast-reducer",
+  "version": "0.1.0",
+  "description": "A Tool to process AST or any other recursive data structure in JavaScript.",
+  "author": "luochen1990@gmail.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luochen1990/ast-reducer"
+  },
+  "keywords": [
+    "AST",
+    "Abstruct Interpreter"
+  ],
+  "main": "./lib/reducer.js",
+  "scripts": {
+    "prepublish": "rm -r lib && coffee -o lib -c src && sleep 1"
+  },
+  "dependencies": {
+    "node-define-error": "^0.1.0"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.12.7"
+  }
+}
