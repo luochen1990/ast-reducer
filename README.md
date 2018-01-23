@@ -3,8 +3,8 @@ AST Reducer
 
 A Tool to process AST or any other recursive data structure in JavaScript.
 
-Feature
--------
+Features
+--------
 
 - An EDSL to define reduce rules
 - Pure functional:
