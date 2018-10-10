@@ -13,6 +13,7 @@ defineReducer = (opts) ->
 	reducerName = opts?.name ? '?'
 	parseNode = opts?.parseNode ? (x) -> {rule: x[0], arg: x[1..]}
 	register = opts?.register ? {}
+	superReducer = opts?.superReducer ? null
 	defaultRule = opts?.defaultRule ? (arg, context, rule) -> throw new UnimplementedRule(rule)
 	init = (register) ->
 		impl = (rule) -> (body) ->
@@ -20,7 +21,15 @@ defineReducer = (opts) ->
 
 		reduce = (root, context_ = {}) ->
 			{env, initState} = context_
-			context = {env, state: initState?()}
+			state0 = initState?()
+
+			callSuper = (rule) ->
+				funcBody = superReducer.register[rule]
+				_callSuper = (arg) ->
+					funcBody.call(rec, arg, {env, state: state0, superReducer: superReducer?.superReducer}, rule)
+
+			context = {env, state: state0, callSuper}
+
 			path = []
 			rec = (root) ->
 				rec.current = root
@@ -30,11 +39,11 @@ defineReducer = (opts) ->
 					throw new NodeParsingError('', e)
 				body = register[rule] ? defaultRule
 				path.push(rule)
-				#log -> state
 				r = body.call(rec, arg, context, rule)
 				path.pop()
 				return r
 			rec.path = path
+
 			try
 				rst = rec(root)
 				return {result: rst, state: context.state}
@@ -44,6 +53,7 @@ defineReducer = (opts) ->
 		return (ruleDescripter) ->
 			ruleDescripter(impl)
 			reducer = {
+				register: register
 				runState: (t, context) -> reduce(t, context)
 				evalState: (t, context) -> reduce(t, context).result
 				execState: (t, context) -> reduce(t, context).state
@@ -52,6 +62,7 @@ defineReducer = (opts) ->
 					name: opts2.name
 					parseNode: opts2.parseNode ? parseNode
 					register: copyObj(register)
+					superReducer: reducer
 					defaultRule: opts2.defaultRule ? defaultRule
 				})
 			}
@@ -79,6 +90,7 @@ if module.parent is null
 
 	evalExpr2 = evalExpr1.derive({name: 'ArithCalc1'}) (def) ->
 		def('*') ([a, b], {env, state}) -> state.cnt += 1; @(a) * @(b)
+		def('+') ([a, b], {callSuper}) -> callSuper('+')([a, b])
 
 	context = {env: {}, initState: (-> {cnt: 0})}
 
@@ -86,5 +98,5 @@ if module.parent is null
 	log -> evalExpr1.runState(['+', ['-', ['const', 1], ['const', 2]], ['+', ['const', '4'], ['const', '8']]], context)
 	log -> evalExpr1.runState(['+', ['-', ['const', 1], ['const', 2]], ['+', ['const', '4'], ['const', '8']]], context)
 	log -> evalExpr2.runState(['+', ['-', ['const', 1], ['const', 2]], ['*', ['const', '4'], ['const', '8']]], context)
-	log -> evalExpr1.runState(['+', ['-', ['const', 1], ['const', 2]], ['*', ['const', '4'], ['const', '8']]], context)
+	#log -> evalExpr1.runState(['+', ['-', ['const', 1], ['const', 2]], ['*', ['const', '4'], ['const', '8']]], context)
 

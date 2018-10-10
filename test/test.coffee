@@ -1,4 +1,4 @@
-{defineReducer} = require('./reducer')
+{defineReducer} = require('../src/reducer')
 
 ### Simple Usage ###
 
