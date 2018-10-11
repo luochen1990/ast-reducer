@@ -17,7 +17,7 @@
     "prepare": "rm -r lib && coffee -o lib -c src && sleep 1"
   },
   "dependencies": {
-    "node-define-error": "^0.1.0"
+    "node-define-error": "^0.1.3"
   },
   "devDependencies": {
     "coffee-script": "^1.12.7"
