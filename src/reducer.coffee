@@ -23,12 +23,13 @@ defineReducer = (opts) ->
 			{env, initState} = context_
 			state0 = initState?()
 
-			callSuper = (rule) ->
-				funcBody = superReducer.register[rule]
-				_callSuper = (arg) ->
-					funcBody.call(rec, arg, {env, state: state0, superReducer: superReducer?.superReducer}, rule)
+			_callSuper = (supRed) ->
+				__callSuper = (rule) ->
+					funcBody = supRed._register[rule]
+					___callSuper = (arg) ->
+						funcBody.call(rec, arg, {env, state: state0, callSuper: _callSuper(supRed._superReducer)}, rule)
 
-			context = {env, state: state0, callSuper}
+			context = {env, state: state0, callSuper: _callSuper(superReducer)}
 
 			path = []
 			rec = (root) ->
@@ -53,7 +54,8 @@ defineReducer = (opts) ->
 		return (ruleDescripter) ->
 			ruleDescripter(impl)
 			reducer = {
-				register: register
+				_register: register
+				_superReducer: superReducer
 				runState: (t, context) -> reduce(t, context)
 				evalState: (t, context) -> reduce(t, context).result
 				execState: (t, context) -> reduce(t, context).state
