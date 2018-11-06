@@ -1,6 +1,6 @@
 {
   "name": "ast-reducer",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A Tool to process AST or any other recursive data structure in JavaScript.",
   "author": "luochen1990@gmail.com",
   "license": "MIT",
